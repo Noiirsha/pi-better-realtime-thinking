@@ -13,14 +13,14 @@
 要求 Pi 1.4.0+、Node.js 22.18+（推荐 24）。无额外运行依赖。
 
 ```sh
-pi install /Users/noiirsha/workspace/pi_agent_plugins/pi_better_realtime_thinking
+pi install /absolute/path/to/pi-better-realtime-thinking
 ```
 
 默认收起原生 Thinking 块：在 Pi 的 `/settings` 中开启隐藏 Thinking，或者运行以下一次性配置：
 
 ```sh
-cd /Users/noiirsha/workspace/pi_agent_plugins/pi_better_realtime_thinking
-PI_NODE_MODULES=/Users/noiirsha/.pi/agent/install/releases/1.4.0/node_modules npm run configure
+cd /absolute/path/to/pi-better-realtime-thinking
+PI_NODE_MODULES=/path/to/pi/runtime/node_modules npm run configure
 ```
 
 配置脚本使用 Pi 的 SettingsManager 将全局 `hideThinkingBlock` 设为 true，保留其他配置。项目配置可能覆盖全局值。安装／配置后运行 `/reload` 或重启 Pi。
@@ -42,7 +42,7 @@ PI_NODE_MODULES=/Users/noiirsha/.pi/agent/install/releases/1.4.0/node_modules np
 
 ```sh
 npm test
-PI_NODE_MODULES=/Users/noiirsha/.pi/agent/install/releases/1.4.0/node_modules npm test
+PI_NODE_MODULES=/path/to/pi/runtime/node_modules npm test
 ```
 
 第二条还检查真实 Pi 扩展加载器、流事件生命周期、原生文本渲染宽度、中文／emoji，以及隔离目录里的配置写入。测试不使用真实模型，不产生 API 费用。
@@ -50,3 +50,18 @@ PI_NODE_MODULES=/Users/noiirsha/.pi/agent/install/releases/1.4.0/node_modules np
 官方接口参考：[扩展文档](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/extensions.md)、[工作指示符示例](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/examples/extensions/working-indicator.ts)。
 
 Git 提交沿用 `type: describe` 格式。
+
+## 独立性与插件协作
+
+本仓库不导入或嵌套其他插件；Pi 提供扩展 SDK，无需执行 npm install。`pi-ro-rw-mode`（footer）、`pi-light-subagent`（任务概览）和 `pi-deepseek-web-feature`（联网工具）均为可选的独立安装，与本插件没有直接调用关系。子代理禁用扩展，因此不会加载本插件。`PiProviderManager` 不是依赖。
+
+卸载：`pi remove /absolute/path/to/pi-better-realtime-thinking`，再 `/reload`。卸载不会撤销一次性配置脚本设置的 `hideThinkingBlock`；可在 Pi `/settings` 中自行调整。本包保留 `private: true`，尚未发布到 npm，上传 GitHub 时请保留完整仓库（包括 `src/` 和 `scripts/`）。
+
+## 仓库结构
+
+- `index.ts`：订阅 Pi 流事件，管理工作行和清理生命周期。
+- `src/preview.ts`：有界文本尾部与实时预览计时逻辑。
+- `scripts/configure.mjs`：可选的一次性全局折叠设置。
+- `test/`：纯预览逻辑、真实 Pi 加载器及隔离配置检查。
+
+目录和包名使用中划线；事件、环境变量及 Pi 配置字段使用各自接口规定的拼写。

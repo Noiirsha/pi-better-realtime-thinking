@@ -8,6 +8,12 @@
     "test": "node --test test/*.test.mjs",
     "configure": "node scripts/configure.mjs"
   },
-  "engines": { "node": ">=22.18.0" },
-  "pi": { "extensions": ["./index.ts"] }
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
 }
