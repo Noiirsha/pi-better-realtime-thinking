@@ -4,16 +4,18 @@ import { ThinkingPreview } from "../src/preview.ts";
 
 const columns = {width: text => text.length, slice: (text, start, width) => text.slice(start, start + width), clean: text => text};
 
-test("empty thinking, elapsed time, marquee, new titles and stop", () => {
+test("empty thinking, elapsed time, immediate tail, new titles and stop", () => {
   const preview = new ThinkingPreview(columns);
   assert.equal(preview.render(80, 0), undefined);
   preview.start(0, 0);
   assert.equal(preview.render(80, 10_000), "Thinking (10s)…");
   preview.update(0, "Checking the current implementation carefully", 10_000);
   const first = preview.render(35, 10_000);
-  assert.equal(first, "Thinking (10s): Checking the c");
+  assert.equal(first, "Thinking (10s): tion carefully");
   assert.equal(preview.render(35, 10_100), first);
-  assert.notEqual(preview.render(35, 11_100), first.replace("10s", "11s"));
+  assert.equal(preview.render(35, 11_100), first.replace("10s", "11s"));
+  preview.append(0, " NEW TOKENS", 11_100);
+  assert.ok(preview.render(35, 11_100).endsWith(" NEW TOKENS"));
   preview.update(1, "New title", 12_000);
   assert.equal(preview.render(80, 12_000), "Thinking (12s): New title");
   preview.stop();
