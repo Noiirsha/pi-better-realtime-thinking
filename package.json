@@ -1,0 +1,13 @@
+{
+  "name": "pi-better-realtime-thinking",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A compact, scrolling live thinking preview in Pi's native working row.",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "configure": "node scripts/configure.mjs"
+  },
+  "engines": { "node": ">=22.18.0" },
+  "pi": { "extensions": ["./index.ts"] }
+}
